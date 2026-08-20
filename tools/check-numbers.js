@@ -27,6 +27,9 @@ const FILES = [
   'C:/Users/kurod/projects/_portfolio/portfolio.html',
 ];
 
+/* 1枚もの（PDFの元。書式が違うので専用の検査を後段で行う） */
+const ONESHEET = 'C:/Users/kurod/projects/_proposals/ポートフォリオ1枚.html';
+
 let ng = 0;
 
 for (const f of FILES) {
@@ -71,6 +74,29 @@ for (const f of FILES) {
   /* WordPress の移行ページ数 */
   if (h.includes('WordPress') && !h.includes('全' + WP_PAGES + 'ページ') && !h.includes(WP_PAGES + 'ページ')) {
     console.log('   ★ WordPress移行の「' + WP_PAGES + 'ページ」が見当たりません'); ng++;
+  }
+  console.log('');
+}
+
+/* ---- 1枚もの（ポートフォリオ1枚.html）の検査 ---- */
+if (fs.existsSync(ONESHEET)) {
+  const h = fs.readFileSync(ONESHEET, 'utf8');
+  console.log('■ _proposals/ポートフォリオ1枚.html（PDFの元）');
+  const want = [
+    ['<b>107</b>', '合計107ページ'],
+    ['全60ページ ／ 実稼働 約25時間', 'LA REINE 60P'],
+    ['全25ページ ／ 実稼働 約20時間', '結-YUI- 25P'],
+    ['全22ページ ／ 実稼働 約15時間', 'Nexus 22P'],
+    ['全22ページを移行 ／ 実稼働 約9時間', 'WordPress移行 22P/9h'],
+    ['nexus-am.rf.gd', 'WordPress版の公開URL'],
+  ];
+  for (const [needle, label] of want) {
+    const ok = h.includes(needle);
+    if (!ok) ng++;
+    console.log('   ' + (ok ? '○' : '★') + ' ' + label + (ok ? '' : '  ← 見つかりません: ' + needle));
+  }
+  for (const bad of ['全62ページ', '全24ページ', '<b>110</b>', '33<small']) {
+    if (h.includes(bad)) { ng++; console.log('   ★ 古い表記が残っています: ' + bad); }
   }
   console.log('');
 }
