@@ -350,6 +350,25 @@
     .close-grid .cta{padding-left:0;}
     .meta li{border-right:none;}
   }
+
+  /* ============================================================
+     印刷・PDF書き出し用
+     ブラウザは既定で背景画像・背景色を印刷しない。
+     このサイトは実績の写真を背景画像で敷いているため、
+     これが無いとPDFが文字だけになる。
+     ============================================================ */
+  @media print {
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    /* 画面用の動きは紙では意味がない */
+    * { animation: none !important; transition: none !important; }
+    /* 区画が途中で切れないようにする */
+    .block, article, .card { break-inside: avoid; page-break-inside: avoid; }
+    /* 画面に固定している要素は紙では邪魔になる */
+    .nav, .topbar, header { position: static !important; }
+  }
 </style>
 </head>
 <body>
